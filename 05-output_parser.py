@@ -4,6 +4,7 @@
 #     "ipython==8.32.0",
 #     "langchain==0.3.17",
 #     "langchain-community==0.3.16",
+#     "langchain-openai==0.3.4",
 #     "marimo",
 #     "openai==1.61.1",
 #     "python-dotenv==1.0.1",
@@ -25,6 +26,7 @@ def _():
     from langchain.llms import OpenAI
     from langchain.prompts import PromptTemplate
     from langchain.chains import LLMChain
+    from langchain.output_parsers import StructuredOutputParser, ResponseSchema
     from dotenv import load_dotenv, find_dotenv
     import marimo as mo
     return (
@@ -32,6 +34,8 @@ def _():
         LLMChain,
         OpenAI,
         PromptTemplate,
+        ResponseSchema,
+        StructuredOutputParser,
         find_dotenv,
         load_dotenv,
         mo,
@@ -50,13 +54,11 @@ def _(os):
 
 @app.cell
 def _(find_dotenv, load_dotenv, openai, os):
-    # Ensure you have a .env file in the AgenticAISystems folder with your OPENAI_API_KEY.
     working_dir = os.getcwd()
     status = load_dotenv(
         find_dotenv(
-            filename=f'{working_dir}/AgenticAISystems/.env', 
-            raise_error_if_not_found=True
-        )
+            filename=f'{working_dir}/tutorials/.env', 
+            raise_error_if_not_found=True)
     )
 
     # API configuration
@@ -107,12 +109,52 @@ def _(client):
 
 
 @app.cell
-def _(PromptTemplate):
-    # Define a prompt template.
-    # Here, we're asking the LLM to explain a topic in simple terms.
+def _(ResponseSchema):
+    # Define the expected output schema.
+    response_schemas = [
+        ResponseSchema(
+            name="name", 
+            description="The full name of the customer."
+        ),
+        ResponseSchema(
+            name="email", 
+            description="The email address of the customer."
+        ),
+        ResponseSchema(
+            name="phone", 
+            description="The phone number of the customer."
+        ),
+    ]
+    return (response_schemas,)
+
+
+@app.cell
+def _(StructuredOutputParser, response_schemas):
+    # Build the output parser from the response schemas.
+    output_parser = StructuredOutputParser.from_response_schemas(response_schemas)
+    # Get formatting instructions that will tell the LLM how to format its output.
+    format_instructions = output_parser.get_format_instructions()
+
+    # Create a prompt template instructing the LLM to extract customer info and output in JSON format.
+    template = """
+    Extract the following customer information from the text:
+    - Full name
+    - Email address
+    - Phone number
+
+    Text:
+    {text}
+
+    {format_instructions}
+    """
+    return format_instructions, output_parser, template
+
+
+@app.cell
+def _(PromptTemplate, template):
     prompt = PromptTemplate(
-        input_variables=["topic"],
-        template="Explain the concept of {topic} as a scientists."
+        input_variables=["text", "format_instructions"],
+        template=template,
     )
     return (prompt,)
 
@@ -127,29 +169,45 @@ def _(OpenAI):
 @app.cell
 def _(llm, prompt):
     # Compose the prompt and LLM using the chaining operator.
-    # This creates a RunnableSequence equivalent to the old LLMChain.
     chain = prompt | llm
     return (chain,)
 
 
 @app.cell
-def _():
-    # Prepare the input as a dictionary.
-    input_data = {"topic": "quantum computing"}
+def _(format_instructions):
+    # Input text containing customer information.
+    input_data = {
+        "text": (
+            "I recently ordered a new laptop, and I had a question. "
+            "My name is Alice Johnson. Please contact me at alice.johnson@example.com "
+            "or call me at (555) 123-4567."
+        ),
+        "format_instructions": format_instructions
+    }
     return (input_data,)
 
 
 @app.cell
 def _(chain, input_data):
-    # Execute the chain using the invoke() method.
-    result = chain.invoke(input_data)
-    return (result,)
+    # Execute the chain using the .invoke() method.
+    raw_output = chain.invoke(input_data)
+    print("Raw LLM output:")
+    print(raw_output)
+    return (raw_output,)
 
 
 @app.cell
-def _(result):
-    print("Response from the OpenAI LLM:")
-    print(result)
+def _(output_parser, raw_output):
+    # Parse the LLM's output string into a Python dictionary.
+    parsed_output = output_parser.parse(raw_output)
+    print("\nParsed output as Python dictionary:")
+    print(parsed_output)
+    return (parsed_output,)
+
+
+@app.cell
+def _(parsed_output):
+    print(type(parsed_output))
     return
 
 

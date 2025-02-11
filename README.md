@@ -1,3 +1,12 @@
+# Code Previews
+
+#### 1. LLM Basics: [here](https://static.marimo.app/static/llm-basics-lxym)
+#### 2. Lang Basics: [here](https://static.marimo.app/static/lang-basics-ztxh)
+#### 3. Prompt Engineering: [here](https://static.marimo.app/static/prompt-engineering-cxpu)
+#### 4. Tool Agent: [here](https://static.marimo.app/static/tool-agent-m32m)
+#### 5. Output Parser: [here](https://static.marimo.app/static/output-parser-6ste)
+#### 6. Lang Memory: [here](https://static.marimo.app/static/lang-memory-6mnq)
+
 # Get Started
 
 ## 1. Install Miniconda (Optional)

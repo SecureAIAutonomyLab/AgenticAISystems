@@ -25,9 +25,17 @@ def _():
     from langchain.llms import OpenAI
     from langchain.prompts import PromptTemplate
     from langchain.chains import LLMChain
+    # Memory Packages
+    from langchain.chat_models import ChatOpenAI
+    from langchain.chains import ConversationChain
+    from langchain.memory import ConversationBufferMemory
+
     from dotenv import load_dotenv, find_dotenv
     import marimo as mo
     return (
+        ChatOpenAI,
+        ConversationBufferMemory,
+        ConversationChain,
         IPython,
         LLMChain,
         OpenAI,
@@ -107,50 +115,36 @@ def _(client):
 
 
 @app.cell
-def _(PromptTemplate):
-    # Define a prompt template.
-    # Here, we're asking the LLM to explain a topic in simple terms.
-    prompt = PromptTemplate(
-        input_variables=["topic"],
-        template="Explain the concept of {topic} as a scientists."
+def _(ChatOpenAI):
+    llm = ChatOpenAI(
+        temperature=0.0,
+        model_name="gpt-3.5-turbo"  # or another supported model
     )
-    return (prompt,)
-
-
-@app.cell
-def _(OpenAI):
-    # Initialize the OpenAI LLM.
-    llm = OpenAI(temperature=0.5)
     return (llm,)
 
 
 @app.cell
-def _(llm, prompt):
-    # Compose the prompt and LLM using the chaining operator.
-    # This creates a RunnableSequence equivalent to the old LLMChain.
-    chain = prompt | llm
-    return (chain,)
+def _(ConversationBufferMemory):
+    memory = ConversationBufferMemory()
+    return (memory,)
 
 
 @app.cell
-def _():
-    # Prepare the input as a dictionary.
-    input_data = {"topic": "quantum computing"}
-    return (input_data,)
+def _(ConversationChain, llm, memory):
+    conversation = ConversationChain(
+        llm=llm,
+        memory=memory,
+        verbose=True
+    )
+    return (conversation,)
 
 
 @app.cell
-def _(chain, input_data):
-    # Execute the chain using the invoke() method.
-    result = chain.invoke(input_data)
-    return (result,)
-
-
-@app.cell
-def _(result):
-    print("Response from the OpenAI LLM:")
-    print(result)
-    return
+def _(conversation):
+    # Example usage:
+    response = conversation.run("Hello, how are you?")
+    print(response)
+    return (response,)
 
 
 if __name__ == "__main__":
