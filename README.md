@@ -42,7 +42,7 @@ conda --version
 
 Restart your terminal to apply changes.
 
-**For Windows**
+**For Windows**:
 Search for Anaconda Prompt in Windows search and open it.
 
 ## 2. Set Up the Python Environment
@@ -71,7 +71,7 @@ pip install marimo
 
 **Clone repository**:
 ```bash
-git clone https://github.com/SecureAIAutonomyLab/AgenticAISystems.git```
+git clone https://github.com/SecureAIAutonomyLab/AgenticAISystems.git
 ```
 
 **Start marimo server**:
