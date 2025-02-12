@@ -78,3 +78,5 @@ git clone https://github.com/SecureAIAutonomyLab/AgenticAISystems.git```
 ```bash
 marimo edit --headless --no-token
 ```
+
+**Note**: I highly recommend reading this [guide](https://docs.marimo.io/guides/reactivity/) about how to run marimo notebooks because they work a bit differently than regular notebooks.
