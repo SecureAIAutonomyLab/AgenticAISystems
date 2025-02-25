@@ -74,7 +74,7 @@ pip install marimo
 git clone https://github.com/SecureAIAutonomyLab/AgenticAISystems.git
 ```
 
-**Save OpenAI API Key:
+**Save OpenAI API Key**:
 * Create .env file
 ```bash
 nano AgenticAISystems/.env
