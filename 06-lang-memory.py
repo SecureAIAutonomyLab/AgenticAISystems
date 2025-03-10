@@ -134,7 +134,7 @@ def _(ConversationChain, llm, memory):
     conversation = ConversationChain(
         llm=llm,
         memory=memory,
-        verbose=True
+        verbose=False
     )
     return (conversation,)
 
@@ -142,9 +142,43 @@ def _(ConversationChain, llm, memory):
 @app.cell
 def _(conversation):
     # Example usage:
-    response = conversation.run("Hello, how are you?")
-    print(response)
-    return (response,)
+    _response = conversation.run("my name is Paul Rad.")
+    print(_response)
+    return
+
+
+@app.cell
+def _(memory):
+    print(memory.buffer)
+    return
+
+
+@app.cell
+def _(conversation):
+    # Example usage:
+    _response = conversation.run("what is 1+1?")
+    print(_response)
+    return
+
+
+@app.cell
+def _(memory):
+    print(memory.buffer)
+    return
+
+
+@app.cell
+def _(conversation):
+    # Example usage:
+    _response = conversation.run("what is my name?")
+    print(_response)
+    return
+
+
+@app.cell
+def _(memory):
+    print(memory.buffer)
+    return
 
 
 if __name__ == "__main__":
