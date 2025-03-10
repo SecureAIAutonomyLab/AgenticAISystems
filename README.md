@@ -42,7 +42,7 @@ conda --version
 
 Restart your terminal to apply changes.
 
-**For Windows**
+**For Windows**:
 Search for Anaconda Prompt in Windows search and open it.
 
 ## 2. Set Up the Python Environment
@@ -71,10 +71,22 @@ pip install marimo
 
 **Clone repository**:
 ```bash
-git clone https://github.com/SecureAIAutonomyLab/AgenticAISystems.git```
+git clone https://github.com/SecureAIAutonomyLab/AgenticAISystems.git
+```
+
+**Save OpenAI API Key**:
+* Create .env file
+```bash
+nano AgenticAISystems/.env
+```
+* Add the following line to the .env file:
+```
+OPENAI_API_KEY=<replace-with-your-key>
 ```
 
 **Start marimo server**:
 ```bash
 marimo edit --headless --no-token
 ```
+
+**Note**: I highly recommend reading this [guide](https://docs.marimo.io/guides/reactivity/) about how to run marimo notebooks because they work a bit differently than regular notebooks.
